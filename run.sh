@@ -4,7 +4,7 @@ cd $PROD_PATH
 rm -f /app/wechat_report/celery_worker.pid
 rm -f /app/wechat_report/celery_beat.pid
 
-# 安装字体
+# 安装字体（非必须）
 tar -zxf /app/wechat_report/win.tar.gz -C /usr/share/fonts/
 cd /usr/share/fonts/win/
 mkfontscale
@@ -12,9 +12,8 @@ mkfontdir
 fc-cache -fv
 
 
-# 对工具做链接
+# 对image工具做链接（非必须）
 ln -s /app/wechat_report/wkhtmltox/bin/wkhtmltoimage /usr/local/bin/
-ln -s /app/wechat_report/wkhtmltox/bin/wkhtmltopdf /usr/local/bin/
 ln -s /app/wechat_report/wkhtmltox/bin/wkhtmltopdf /usr/local/bin/
 ln -s /app/wechat_report/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/local/bin/
 
