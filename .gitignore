@@ -1,0 +1,8 @@
+.git/
+.idea/
+nohup.out
+Dockerfile
+.gitlab-ci.yml
+run.sh
+config.ini
+venv
