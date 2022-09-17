@@ -3,3 +3,6 @@
 nohup.out
 config.ini
 venv
+Dockerfile
+.gitlab-ci.yml
+run.sh
