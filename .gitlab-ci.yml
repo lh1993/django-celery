@@ -1,0 +1,32 @@
+stages:
+  - package-datapushcenter
+
+before_script:
+  - export DATE=`date +%Y%m%d`
+  - export TAG=$DATE-$CI_COMMIT_SHORT_SHA
+  - export IMAGE=registry.cn-beijing.aliyuncs.com/base/datapushcenter
+  - docker info
+  - /bin/sh /app/dockerToken/run.sh registry.cn-beijing.aliyuncs.com
+
+package-datapushcenter:
+  stage: package-datapushcenter
+  script:
+    - echo "============开始打包==============="
+    - echo $TAG
+    - echo "============开始构建镜像 build-docker-images-datapushcenter==============="
+    - docker build -t datapushcenter:$TAG -f Dockerfile .
+    - echo "============为镜像打标签==============="
+    - docker tag datapushcenter:$TAG registry.cn-beijing.aliyuncs.com/base/datapushcenter:$TAG
+    - echo "============上传镜像 datapushcenter:$TAG 到 base==============="
+    - docker push registry.cn-beijing.aliyuncs.com/base/datapushcenter:$TAG
+    - export TYPE=Deployment
+    - export NAME=datapushcenter-server
+    - export NAMESPACE=base
+    - export CONTAINER_ID=0
+    - echo "============测试环境部署==============="
+    - kubectl --kubeconfig=$HOME/.kube/config.kfxfd --insecure-skip-tls-verify patch $TYPE $NAME -n $NAMESPACE --type=json -p="[{\"op\":\"replace\", \"path\":\"/spec/template/spec/containers/${CONTAINER_ID}/image\", \"value\":\"$IMAGE:$TAG\"}]"
+    - echo "============获取tasks列表==============="
+    - sleep 120
+    - curl http://datapushcenter-server-svc.base.svc.cluster.local:8080/api/celery/tasks-list
+
+  when: manual
